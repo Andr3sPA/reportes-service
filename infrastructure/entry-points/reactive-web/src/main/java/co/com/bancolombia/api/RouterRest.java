@@ -1,6 +1,7 @@
 package co.com.bancolombia.api;
 
 import co.com.bancolombia.api.config.ReportsPath;
+import co.com.bancolombia.api.filter.ApiKeyAuthFilter;
 import co.com.bancolombia.api.filter.GlobalExceptionFilter;
 
 import co.com.bancolombia.model.ApprovedReport;
@@ -28,7 +29,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 @RequiredArgsConstructor
 public class RouterRest {
-
+    private final ApiKeyAuthFilter apiKeyAuthFilter;
     private final ReportsPath reportsPath;
     private final GlobalExceptionFilter globalExceptionFilter;
     @Bean
@@ -64,7 +65,8 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> routerFunction(HandlerReport handlerReport) {
         return route(GET(reportsPath.getReports()), handlerReport::getAllReports)
-                .filter(globalExceptionFilter);
+                .filter(globalExceptionFilter)
+                .filter(apiKeyAuthFilter);
     }
 }
 
