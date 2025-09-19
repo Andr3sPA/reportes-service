@@ -8,7 +8,17 @@ dependencies {
     implementation 'jakarta.persistence:jakarta.persistence-api' // TODO: Check if it's still necessary
     implementation 'org.postgresql:r2dbc-postgresql'
     implementation 'org.reactivecommons.utils:object-mapper-api:0.1.0'
-    
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
+
+    implementation "io.awspring.cloud:spring-cloud-aws-starter"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+
+    compileOnly "org.projectlombok:lombok:1.18.30"  // o la versión que estés usando
+    implementation "org.springframework.boot:spring-boot-starter-json"  // para Jackson
     // MapStruct dependencies
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -17,10 +27,8 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.2'
     testImplementation 'org.reactivecommons.utils:object-mapper:0.1.0'
 
-    // AWS SDK v2 - Lambda
     implementation 'software.amazon.awssdk:lambda:2.20.0'
 
-    // (opcional, si quieres usar perfiles de AWS para credenciales, S3, etc.)
     implementation 'software.amazon.awssdk:auth:2.20.0'
     implementation 'software.amazon.awssdk:core:2.20.0'
 }
