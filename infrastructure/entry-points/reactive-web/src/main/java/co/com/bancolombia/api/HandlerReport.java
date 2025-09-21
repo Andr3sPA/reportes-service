@@ -18,6 +18,6 @@ public class HandlerReport {
     public Mono<ServerResponse> getAllReports(ServerRequest serverRequest){
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(reportsUseCase.getAllReports(), ApprovedReport.class);
+                .bodyValue(reportsUseCase.getAllReports());
     }
 }

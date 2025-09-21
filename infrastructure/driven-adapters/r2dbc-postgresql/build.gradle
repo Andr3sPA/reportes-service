@@ -12,10 +12,10 @@ dependencies {
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter"
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     implementation "org.springframework.boot:spring-boot-starter-logging"
 
-    implementation "org.springframework.boot:spring-boot-starter-log4j2"
 
     compileOnly "org.projectlombok:lombok:1.18.30"  // o la versión que estés usando
     implementation "org.springframework.boot:spring-boot-starter-json"  // para Jackson
@@ -25,8 +25,9 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk-sqs:1.12.742'
     implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.742'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.2'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb:3.3.0'
     testImplementation 'org.reactivecommons.utils:object-mapper:0.1.0'
-
+    implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.24'
     implementation 'software.amazon.awssdk:lambda:2.20.0'
 
     implementation 'software.amazon.awssdk:auth:2.20.0'

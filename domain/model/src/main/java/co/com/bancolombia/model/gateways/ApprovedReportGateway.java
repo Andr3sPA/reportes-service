@@ -1,9 +1,8 @@
 package co.com.bancolombia.model.gateways;
 
-import co.com.bancolombia.model.ApprovedReport;
-import reactor.core.publisher.Flux;
-
+import co.com.bancolombia.model.Response.ListReportsRes;
+import reactor.core.publisher.Mono;
 public interface ApprovedReportGateway {
-    Flux<ApprovedReport> findAll();
+    Mono<ListReportsRes> findAll();
 }
 

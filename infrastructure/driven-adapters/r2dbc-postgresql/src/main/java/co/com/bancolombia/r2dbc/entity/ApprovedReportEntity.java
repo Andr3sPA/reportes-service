@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
-@Table("approved_report")
+@Table("reporte_aprobados")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

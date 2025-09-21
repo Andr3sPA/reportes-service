@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -65,8 +66,7 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> routerFunction(HandlerReport handlerReport) {
         return route(GET(reportsPath.getReports()), handlerReport::getAllReports)
-                .filter(globalExceptionFilter)
-                .filter(apiKeyAuthFilter);
+                .filter(globalExceptionFilter);
     }
 }
 

@@ -43,8 +43,7 @@ cors:
 
 routes:
   paths:
-
-    reports: "/api/v1/reportes"
+    reports: /api/v1/reportes
 adapters:
   restconsumer:
     timeout: 5000
