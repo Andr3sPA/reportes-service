@@ -5,6 +5,7 @@ server:
 api:
   auth:
     key: ${API_AUTH_KEY}
+
 spring:
   application:
     name: "JavaReactivo"
@@ -41,9 +42,11 @@ management:
 cors:
   allowed-origins: "*"
 
+# CONFIGURACIÓN FALTANTE - RUTAS
 routes:
   paths:
     reports: /api/v1/reportes
+
 adapters:
   restconsumer:
     timeout: 5000
@@ -83,4 +86,3 @@ logging:
     io.awspring.cloud.sqs: WARN
     org.springframework.r2dbc: WARN
     reactor: INFO
-

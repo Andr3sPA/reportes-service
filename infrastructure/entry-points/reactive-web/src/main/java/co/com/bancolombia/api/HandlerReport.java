@@ -15,9 +15,16 @@ import reactor.core.publisher.Mono;
 public class HandlerReport {
     private final RequestValidator requestValidator;
     private final GetApprovedReportsUseCase reportsUseCase;
-    public Mono<ServerResponse> getAllReports(ServerRequest serverRequest){
+    public Mono<ServerResponse> getAllReports(ServerRequest serverRequest) {
+        return reportsUseCase.getAllReports()
+                .flatMap(reports -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(reports))
+                .switchIfEmpty(ServerResponse.noContent().build());
+    }
+    public Mono<ServerResponse> helloWorld(ServerRequest serverRequest) {
         return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(reportsUseCase.getAllReports());
+                .contentType(MediaType.TEXT_PLAIN)
+                .bodyValue("Hola mundo");
     }
 }

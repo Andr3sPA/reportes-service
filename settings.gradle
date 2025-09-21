@@ -10,7 +10,6 @@ buildCache {
     }
 }
 
-
 include ':app-service'
 include ':model'
 include ':usecase'
@@ -19,6 +18,7 @@ project(':app-service').projectDir = file('./applications/app-service')
 project(':model').projectDir = file('./domain/model')
 project(':usecase').projectDir = file('./domain/usecase')
 project(':exception').projectDir = file('./domain/exception')
+
 include ':reactive-web'
 project(':reactive-web').projectDir = file('./infrastructure/entry-points/reactive-web')
 
@@ -27,5 +27,6 @@ project(':r2dbc-postgresql').projectDir = file('./infrastructure/driven-adapters
 
 include ':dto'
 project(':dto').projectDir = file('./domain/dto')
+
 rootProject.name = 'reports-service'
 

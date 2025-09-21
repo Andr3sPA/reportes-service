@@ -3,7 +3,6 @@ package co.com.bancolombia.api;
 import co.com.bancolombia.api.config.ReportsPath;
 import co.com.bancolombia.api.filter.ApiKeyAuthFilter;
 import co.com.bancolombia.api.filter.GlobalExceptionFilter;
-
 import co.com.bancolombia.model.ApprovedReport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,54 +18,48 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
 import lombok.RequiredArgsConstructor;
-
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableConfigurationProperties(ReportsPath.class)
 public class RouterRest {
     private final ApiKeyAuthFilter apiKeyAuthFilter;
     private final ReportsPath reportsPath;
     private final GlobalExceptionFilter globalExceptionFilter;
+
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/api/v1/solicitud",
+                    path = "/api/v1/reportes", // Actualiza esto si es necesario
                     produces = { MediaType.APPLICATION_JSON_VALUE },
-                    method = RequestMethod.POST,
+                    method = RequestMethod.GET, // Cambiado a GET
                     beanClass = ApprovedReport.class,
-                    beanMethod = "saveLoanApp",
+                    beanMethod = "getAllReports",
                     operation = @Operation(
-                            operationId = "saveLoanApp",
-                            summary = "Crear solicitud de préstamo",
-                            description = "Crea una nueva solicitud de préstamo en el sistema",
-                            requestBody = @RequestBody(
-                                    required = true,
-                                    content = @Content(
-                                            schema = @Schema(implementation = ApprovedReport.class)
-                                    )
-                            ),
+                            operationId = "getAllReports",
+                            summary = "Obtener reportes aprobados",
+                            description = "Obtiene todos los reportes de préstamos aprobados",
                             responses = {
                                     @ApiResponse(
                                             responseCode = "200",
-                                            description = "Solicitud creada correctamente",
+                                            description = "Reportes obtenidos correctamente",
                                             content = @Content(
                                                     schema = @Schema(implementation = ApprovedReport.class)
                                             )
                                     ),
-                                    @ApiResponse(responseCode = "400", description = "Datos inválidos")
+                                    @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+                                    @ApiResponse(responseCode = "401", description = "No autorizado")
                             }
                     )
             )
     })
     public RouterFunction<ServerResponse> routerFunction(HandlerReport handlerReport) {
-        return route(GET(reportsPath.getReports()), handlerReport::getAllReports)
+        return route(GET("/api/v1/hola"), handlerReport::helloWorld)
+                .andRoute(GET(reportsPath.getReports()), handlerReport::getAllReports)
+                .filter(apiKeyAuthFilter)
                 .filter(globalExceptionFilter);
     }
 }
-
