@@ -32,6 +32,24 @@ class ApiKeyAuthFilterTest {
         verify(next).handle(request);
     }
 
+    @Test
+    void filterShouldReturnUnauthorizedWhenApiKeyHeaderInvalid() {
+        ApiKeyAuthFilter filter = new ApiKeyAuthFilter();
+        String expectedApiKey = "test-key";
+        setApiKey(filter, expectedApiKey);
+
+        ServerRequest request = mock(ServerRequest.class);
+        ServerRequest.Headers headers = mock(ServerRequest.Headers.class);
+        when(request.headers()).thenReturn(headers);
+        when(headers.firstHeader("X-API-KEY")).thenReturn("invalid-key");
+        HandlerFunction<ServerResponse> next = mock(HandlerFunction.class);
+
+        Mono<ServerResponse> result = filter.filter(request, next);
+        ServerResponse response = result.block();
+        assertNotNull(response);
+        assertEquals(401, response.statusCode().value());
+    }
+
     // Utilidad para inyectar el apiKey en el filtro
     private void setApiKey(ApiKeyAuthFilter filter, String apiKey) {
         try {

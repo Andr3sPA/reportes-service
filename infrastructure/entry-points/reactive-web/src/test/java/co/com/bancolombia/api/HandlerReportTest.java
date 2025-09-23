@@ -66,4 +66,13 @@ class HandlerReportTest {
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
+
+    @Test
+    void getAllReports_shouldHandleException() {
+        when(reportsUseCase.getAllReports()).thenReturn(Mono.error(new RuntimeException("error")));
+        Mono<ServerResponse> response = handlerReport.getAllReports(serverRequest);
+        StepVerifier.create(response)
+                .expectError(RuntimeException.class)
+                .verify();
+    }
 }

@@ -55,4 +55,19 @@ class GlobalExceptionFilterTest {
                 .expectNextMatches(response -> response.statusCode().value() == 400)
                 .verifyComplete();
     }
+
+    @Test
+    void shouldPropagateNonBaseException() {
+        // Arrange
+        RuntimeException exception = new RuntimeException("error");
+        when(handler.handle(request)).thenReturn(Mono.error(exception));
+
+        // Act
+        Mono<ServerResponse> result = filter.filter(request, handler);
+
+        // Assert
+        StepVerifier.create(result)
+                .expectError(RuntimeException.class)
+                .verify();
+    }
 }

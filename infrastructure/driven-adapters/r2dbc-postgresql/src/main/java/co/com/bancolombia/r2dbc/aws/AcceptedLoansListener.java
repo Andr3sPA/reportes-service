@@ -10,11 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Component
-public class AcceptedLoansListener {
 
+public class AcceptedLoansListener {
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
-    private ApprovedReportRepository reportRepository;
+    ApprovedReportRepository reportRepository; // package-private para test
+
+    // Constructor para test
+    AcceptedLoansListener() {}
+    AcceptedLoansListener(ApprovedReportRepository reportRepository) {
+        this.reportRepository = reportRepository;
+    }
 
     @SqsListener("accepted_loans")
     public void handleMessage(String message) {
