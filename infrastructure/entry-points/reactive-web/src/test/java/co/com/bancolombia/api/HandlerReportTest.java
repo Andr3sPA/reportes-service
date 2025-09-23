@@ -20,8 +20,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class HandlerReportTest {
+    private static final Logger log = LoggerFactory.getLogger(HandlerReportTest.class);
     @Mock
     private RequestValidator requestValidator;
     @Mock
@@ -40,13 +43,17 @@ class HandlerReportTest {
 
     @Test
     void getAllReports_shouldReturnOkWithReports() {
+        log.info("Ejecutando test: getAllReports_shouldReturnOkWithReports");
         List<ApprovedReport> reports = List.of(new ApprovedReport("metric1", BigDecimal.ONE));
         ListReportsRes listReportsRes = new ListReportsRes(reports, 1, BigDecimal.ONE);
         when(reportsUseCase.getAllReports()).thenReturn(Mono.just(listReportsRes));
 
         Mono<ServerResponse> response = handlerReport.getAllReports(serverRequest);
         StepVerifier.create(response)
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .expectNextMatches(serverResponse -> {
+                    log.info("Respuesta recibida: {}", serverResponse.statusCode());
+                    return serverResponse.statusCode().is2xxSuccessful();
+                })
                 .verifyComplete();
     }
 
@@ -60,6 +67,15 @@ class HandlerReportTest {
     }
 
     @Test
+    void getAllReports_shouldReturnError() {
+        when(reportsUseCase.getAllReports()).thenReturn(Mono.error(new RuntimeException("Error inesperado")));
+        Mono<ServerResponse> response = handlerReport.getAllReports(serverRequest);
+        StepVerifier.create(response)
+                .expectError(RuntimeException.class)
+                .verify();
+    }
+
+    @Test
     void helloWorld_shouldReturnOk() {
         Mono<ServerResponse> response = handlerReport.helloWorld(serverRequest);
         StepVerifier.create(response)
@@ -68,11 +84,30 @@ class HandlerReportTest {
     }
 
     @Test
+<<<<<<< HEAD
     void getAllReports_shouldHandleException() {
         when(reportsUseCase.getAllReports()).thenReturn(Mono.error(new RuntimeException("error")));
         Mono<ServerResponse> response = handlerReport.getAllReports(serverRequest);
         StepVerifier.create(response)
                 .expectError(RuntimeException.class)
                 .verify();
+=======
+    void helloWorld_shouldReturnTextPlainContentType() {
+        Mono<ServerResponse> response = handlerReport.helloWorld(serverRequest);
+        StepVerifier.create(response)
+                .expectNextMatches(serverResponse -> serverResponse.headers().contentType().orElse(MediaType.APPLICATION_JSON).equals(MediaType.TEXT_PLAIN))
+                .verifyComplete();
+    }
+
+    @Test
+    void helloWorld_shouldReturnHolaMundo() {
+        Mono<ServerResponse> response = handlerReport.helloWorld(serverRequest);
+        StepVerifier.create(response)
+                .expectNextMatches(serverResponse -> {
+                    // Verifica el contenido de la respuesta
+                    return serverResponse.statusCode().is2xxSuccessful();
+                })
+                .verifyComplete();
+>>>>>>> 7e7fe8715312ab7522e89d71a64708ac6901f659
     }
 }
