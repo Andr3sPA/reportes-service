@@ -1,7 +1,7 @@
 package co.com.bancolombia.config;
 
-import co.com.bancolombia.model.gateways.LoanAppGateway;
 import org.junit.jupiter.api.Test;
+import co.com.bancolombia.model.gateways.ApprovedReportGateway;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +39,10 @@ public class UseCasesConfigTest {
         }
 
         @Bean
-        public LoanAppGateway loanAppRepository() {
-            return Mockito.mock(LoanAppGateway.class);
+        public ApprovedReportGateway approvedReportGateway() {
+            return Mockito.mock(ApprovedReportGateway.class);
         }
+        // Bean eliminado: LoanAppGateway no existe en el dominio actual
     }
 
     static class MyUseCase {

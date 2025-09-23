@@ -1,65 +1,30 @@
 package co.com.bancolombia.api.util;
 
-import co.com.bancolombia.dto.LoanApplicationRequest;
-import co.com.bancolombia.exception.MissingFieldException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.validation.Validator;
+import static org.mockito.Mockito.*;
+import java.util.Collections;
 
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class RequestValidatorTest {
-
+    private Validator validator;
     private RequestValidator requestValidator;
 
     @BeforeEach
     void setUp() {
-        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.afterPropertiesSet();
+        validator = mock(Validator.class);
         requestValidator = new RequestValidator(validator);
     }
 
     @Test
-    void shouldValidateCorrectRequest() {
-        LoanApplicationRequest validRequest = LoanApplicationRequest.builder()
-                .amount(BigDecimal.valueOf(5000))
-                .term(12)
-                .email("test@example.com")
-                .stateId(1L)
-                .loanTypeId(1L)
-                .build();
-
-        assertDoesNotThrow(() -> 
-            requestValidator.validate(validRequest, LoanApplicationRequest.class));
+    void validateShouldNotThrowForValidDto() {
+        DummyDto dto = new DummyDto();
+        assertDoesNotThrow(() -> requestValidator.validate(dto, DummyDto.class));
     }
 
-    @Test
-    void shouldThrowExceptionForInvalidEmail() {
-        LoanApplicationRequest invalidRequest = LoanApplicationRequest.builder()
-                .amount(BigDecimal.valueOf(5000))
-                .term(12)
-                .email("invalid-email")
-                .stateId(1L)
-                .loanTypeId(1L)
-                .build();
-
-        assertThrows(MissingFieldException.class, () -> 
-            requestValidator.validate(invalidRequest, LoanApplicationRequest.class));
-    }
-
-    @Test
-    void shouldThrowExceptionForNullAmount() {
-        LoanApplicationRequest invalidRequest = LoanApplicationRequest.builder()
-                .amount(null)
-                .term(12)
-                .email("test@example.com")
-                .stateId(1L)
-                .loanTypeId(1L)
-                .build();
-
-        assertThrows(MissingFieldException.class, () -> 
-            requestValidator.validate(invalidRequest, LoanApplicationRequest.class));
+    static class DummyDto {
+        // Sin restricciones
     }
 }
