@@ -1,16 +1,14 @@
+
 package co.com.bancolombia.r2dbc.aws;
 
 import co.com.bancolombia.r2dbc.entity.ApprovedReport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
-
-
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
@@ -41,18 +39,36 @@ class ApprovedReportRepositoryTest {
     @Test
     void testFindAll() {
         ApprovedReport report = mock(ApprovedReport.class);
-    List<ApprovedReport> list = List.of(report);
-    SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
-        @Override
-        public Iterator<ApprovedReport> iterator() { return list.iterator(); }
-        @Override
-        public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
-    };
-    PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
-    when(scanResult.items()).thenReturn(sdkIterable);
+        List<ApprovedReport> list = List.of(report);
+        SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
+            @Override
+            public Iterator<ApprovedReport> iterator() { return list.iterator(); }
+            @Override
+            public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
+        };
+        PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
+        when(scanResult.items()).thenReturn(sdkIterable);
         when(table.scan()).thenReturn(scanResult);
         List<ApprovedReport> result = repository.findAll();
         assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void testFindAllEmpty() {
+        List<ApprovedReport> list = List.of();
+        SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
+            @Override
+            public Iterator<ApprovedReport> iterator() { return list.iterator(); }
+            @Override
+            public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
+        };
+        PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
+        when(scanResult.items()).thenReturn(sdkIterable);
+        when(table.scan()).thenReturn(scanResult);
+        List<ApprovedReport> result = repository.findAll();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -75,6 +91,24 @@ class ApprovedReportRepositoryTest {
     }
 
     @Test
+    void testFindByMetricaNotFound() {
+        ApprovedReport report = mock(ApprovedReport.class);
+        when(report.getMetrica()).thenReturn("otra");
+        List<ApprovedReport> list = List.of(report);
+        SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
+            @Override
+            public Iterator<ApprovedReport> iterator() { return list.iterator(); }
+            @Override
+            public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
+        };
+        PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
+        when(scanResult.items()).thenReturn(sdkIterable);
+        when(table.scan()).thenReturn(scanResult);
+        List<ApprovedReport> result = repository.findByMetrica("metrica");
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     void testCount() {
         ApprovedReport report1 = mock(ApprovedReport.class);
         ApprovedReport report2 = mock(ApprovedReport.class);
@@ -90,6 +124,22 @@ class ApprovedReportRepositoryTest {
         when(table.scan()).thenReturn(scanResult);
         Integer count = repository.count();
         assertEquals(2, count);
+    }
+
+    @Test
+    void testCountEmpty() {
+        List<ApprovedReport> list = List.of();
+        SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
+            @Override
+            public Iterator<ApprovedReport> iterator() { return list.iterator(); }
+            @Override
+            public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
+        };
+        PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
+        when(scanResult.items()).thenReturn(sdkIterable);
+        when(table.scan()).thenReturn(scanResult);
+        Integer count = repository.count();
+        assertEquals(0, count);
     }
 
     @Test
@@ -110,6 +160,22 @@ class ApprovedReportRepositoryTest {
         when(table.scan()).thenReturn(scanResult);
         BigDecimal sum = repository.sumAllValues();
         assertEquals(BigDecimal.valueOf(11), sum);
+    }
+
+    @Test
+    void testSumAllValuesEmpty() {
+        List<ApprovedReport> list = List.of();
+        SdkIterable<ApprovedReport> sdkIterable = new SdkIterable<>() {
+            @Override
+            public Iterator<ApprovedReport> iterator() { return list.iterator(); }
+            @Override
+            public Spliterator<ApprovedReport> spliterator() { return list.spliterator(); }
+        };
+        PageIterable<ApprovedReport> scanResult = mock(PageIterable.class);
+        when(scanResult.items()).thenReturn(sdkIterable);
+        when(table.scan()).thenReturn(scanResult);
+        BigDecimal sum = repository.sumAllValues();
+        assertEquals(BigDecimal.ZERO, sum);
     }
 }
 
